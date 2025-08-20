@@ -16,7 +16,7 @@ fn main() {
         .l(NodeVal::Num(50))
         .upr(NodeVal::Num(40))
         .up()
-        .upr(NodeVal::Num(91))
+        .upr(NodeVal::Num(90))
         .build();
 
     println!("Antes:");

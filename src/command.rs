@@ -37,21 +37,29 @@ macro_rules! strategy_struct {
 strategy_struct!(Add, |l, r| match (l?, r?) {
     (NodeVal::Num(a), NodeVal::Num(b)) => Some(NodeVal::Num(a + b)),
     (NodeVal::Text(a), NodeVal::Text(b)) => Some(NodeVal::Text(format!("{}{}", a, b))),
+
+    (NodeVal::Null, _) | (_, NodeVal::Null) => Some(NodeVal::Null),
     _ => None,
 });
 
 strategy_struct!(Sub, |l, r| match (l?, r?) {
     (NodeVal::Num(a), NodeVal::Num(b)) => Some(NodeVal::Num(a - b)),
+
+    (NodeVal::Null, _) | (_, NodeVal::Null) => Some(NodeVal::Null),
     _ => None,
 });
 
 strategy_struct!(Mul, |l, r| match (l?, r?) {
     (NodeVal::Num(a), NodeVal::Num(b)) => Some(NodeVal::Num(a * b)),
+
+    (NodeVal::Null, _) | (_, NodeVal::Null) => Some(NodeVal::Null),
     _ => None,
 });
 
 strategy_struct!(Div, |l, r| match (l?, r?) {
     (NodeVal::Num(a), NodeVal::Num(b)) if b != 0 => Some(NodeVal::Num(a / b)),
+
+    (NodeVal::Null, _) | (_, NodeVal::Null) => Some(NodeVal::Null),
     _ => None,
 });
 
