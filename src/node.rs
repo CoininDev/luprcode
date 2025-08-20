@@ -5,7 +5,15 @@ use std::rc::{Rc, Weak};
 pub type NodeRef = Rc<RefCell<Node>>;
 pub type NodeWeak = Weak<RefCell<Node>>;
 
+#[derive(PartialEq, Eq)]
+pub enum NodeID {
+    Left,
+    Right,
+    Root,
+}
+
 pub struct Node {
+    pub id: NodeID,
     pub val: NodeVal,
     pub left: Option<NodeRef>,
     pub right: Option<NodeRef>,
@@ -13,8 +21,9 @@ pub struct Node {
 }
 
 impl Node {
-    pub fn new(val: NodeVal) -> NodeRef {
+    pub fn new(id: NodeID, val: NodeVal) -> NodeRef {
         Rc::new(RefCell::new(Node {
+            id,
             val,
             left: None,
             right: None,
@@ -35,9 +44,24 @@ impl Node {
             let right_val = self.right.as_ref().map(|r| r.borrow().val.clone());
             if let Some(result) = cmd.apply(left_val, right_val) {
                 self.val = result;
-                self.left = None;
-                self.right = None;
+            } else {
+                self.val = NodeVal::Null;
             }
         }
+        if let NodeVal::Destructed = &self.val {
+            if let Some(a) = &self.parent {
+                if let Some(a) = a.upgrade() {
+                    let mut a = a.borrow_mut();
+                    match self.id {
+                        NodeID::Left => a.left = None,
+                        NodeID::Right => a.right = None,
+                        _ => {}
+                    }
+                }
+            }
+        }
+
+        self.left = None;
+        self.right = None;
     }
 }

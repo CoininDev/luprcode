@@ -1,4 +1,7 @@
-use crate::node_val::NodeVal;
+use crate::{
+    memory::{MEMORY, MemNode},
+    node_val::NodeVal,
+};
 
 pub trait CommandStrategy {
     fn apply(&self, left: Option<NodeVal>, right: Option<NodeVal>) -> Option<NodeVal>;
@@ -28,12 +31,13 @@ macro_rules! strategy_struct {
         }
         macro_rules! $name {
             () => {
-                NodeVal::Command(Box::new($name))
+                NodeVal::Command(Box::new($name {}))
             };
         }
     };
 }
 
+//mathematical operations
 strategy_struct!(Add, |l, r| match (l?, r?) {
     (NodeVal::Num(a), NodeVal::Num(b)) => Some(NodeVal::Num(a + b)),
     (NodeVal::Text(a), NodeVal::Text(b)) => Some(NodeVal::Text(format!("{}{}", a, b))),
@@ -65,6 +69,7 @@ strategy_struct!(Div, |l, r| match (l?, r?) {
 
 strategy_struct!(Eq, |l, r| Some(NodeVal::Boolean(l? == r?)));
 
+//boolean
 strategy_struct!(Not, |l, _| match l? {
     NodeVal::Boolean(b) => Some(NodeVal::Boolean(!b)),
     NodeVal::Num(n) => Some(NodeVal::Boolean(n == 0)),
@@ -88,3 +93,21 @@ strategy_struct!(IfCmd, |l, r: Option<NodeVal>| match l? {
     NodeVal::Boolean(false) => None,
     _ => None,
 });
+
+//vars
+strategy_struct!(SetVar, |l: Option<NodeVal>, r: Option<NodeVal>| {
+    let mut mem = MEMORY.lock().ok()?;
+    let key: MemNode = l?.into();
+    let value: MemNode = r.clone()?.into();
+    mem.map.insert(key, value);
+    Some(r?)
+});
+
+strategy_struct!(GetVar, |l: Option<NodeVal>, _| {
+    let mut mem = MEMORY.lock().ok()?;
+    let key: MemNode = l?.into();
+    let r: NodeVal = key.into();
+    Some(r)
+});
+
+strategy_struct!(Destructor, |_, _| { Some(NodeVal::Destructed) });

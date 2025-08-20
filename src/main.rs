@@ -1,22 +1,26 @@
 #[macro_use]
 mod command;
+mod memory;
 mod node;
 mod node_val;
 mod tree;
 mod utils;
 
-use command::{Add, Eq};
+use command::{Add, Destructor, Eq, GetVar, SetVar};
 use node_val::NodeVal;
 use tree::Tree;
 use utils::print_tree;
 
 fn main() {
-    let t = Tree::root(Eq!())
-        .l(Add!())
-        .l(NodeVal::Num(50))
-        .upr(NodeVal::Num(40))
+    let t = Tree::root(NodeVal::Null)
+        .l(Destructor!())
+        .l(SetVar!())
+        .l(NodeVal::Text("var".into()))
+        .upr(NodeVal::Num(256))
         .up()
-        .upr(NodeVal::Num(90))
+        .up()
+        .upr(GetVar!())
+        .l(NodeVal::Text("var".into()))
         .build();
 
     println!("Antes:");
