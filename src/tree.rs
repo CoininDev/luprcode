@@ -1,4 +1,4 @@
-use crate::node::{Node, NodeRef};
+use crate::node::{Node, NodeID, NodeRef};
 use crate::node_val::NodeVal;
 use std::rc::Rc;
 
@@ -9,7 +9,7 @@ pub struct Tree {
 
 impl Tree {
     pub fn root(i: NodeVal) -> Self {
-        let root = Node::new(i);
+        let root = Node::new(NodeID::Root, i);
         Self {
             root: Rc::clone(&root),
             current: root,
@@ -17,7 +17,7 @@ impl Tree {
     }
 
     pub fn l(mut self, i: NodeVal) -> Self {
-        let l = Node::new(i);
+        let l = Node::new(NodeID::Left, i);
         l.borrow_mut().parent = Some(Rc::downgrade(&self.current));
         self.current.borrow_mut().left = Some(Rc::clone(&l));
         self.current = l;
@@ -25,7 +25,7 @@ impl Tree {
     }
 
     pub fn r(mut self, i: NodeVal) -> Self {
-        let r = Node::new(i);
+        let r = Node::new(NodeID::Right, i);
         r.borrow_mut().parent = Some(Rc::downgrade(&self.current));
         self.current.borrow_mut().right = Some(Rc::clone(&r));
         self.current = r;
