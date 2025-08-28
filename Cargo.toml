@@ -3,6 +3,10 @@ name = "workspace"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+name = "luprcode"
+path = "src/lib.rs"
+
 [dependencies]
 lazy_static = "1.5.0"
 serde = "1.0.219"

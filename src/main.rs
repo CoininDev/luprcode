@@ -1,3 +1,5 @@
+//OBSOLETE
+
 #[macro_use]
 mod command;
 mod memory;
