@@ -1,6 +1,6 @@
-use std::hash::Hash;
+// use std::hash::Hash;
 
-use crate::{command::CommandStrategy, memory::MemNode, node::Node};
+use crate::{command::CommandStrategy, memory::MemNode};
 
 pub enum NodeVal {
     Char(char),

@@ -44,10 +44,10 @@ impl Tree {
         self
     }
 
-    pub fn upl(mut self, i: NodeVal) -> Self {
+    pub fn upl(self, i: NodeVal) -> Self {
         self.up().l(i)
     }
-    pub fn upr(mut self, i: NodeVal) -> Self {
+    pub fn upr(self, i: NodeVal) -> Self {
         self.up().r(i)
     }
 

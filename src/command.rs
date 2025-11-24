@@ -1,3 +1,6 @@
+#![allow(dead_code)]
+#![allow(unused_macros)]
+
 use crate::{
     memory::{MEMORY, MemNode},
     node_val::NodeVal,
@@ -106,8 +109,8 @@ strategy_struct!(SetVar, |l: Option<NodeVal>, r: Option<NodeVal>| {
 strategy_struct!(GetVar, |l: Option<NodeVal>, _| {
     let mut mem = MEMORY.lock().ok()?;
     let key: MemNode = l?.into();
-    let r: NodeVal = key.into();
-    Some(r)
+    let res: NodeVal = mem.map[&key].clone().into();
+    Some(res)
 });
 
 strategy_struct!(Destructor, |_, _| { Some(NodeVal::Destructed) });

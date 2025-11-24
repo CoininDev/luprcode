@@ -1,4 +1,4 @@
-use crate::node::{Node, NodeRef};
+use crate::node::NodeRef;
 
 pub fn print_tree(node: &NodeRef, depth: usize) {
     for _ in 0..depth { print!("  "); }

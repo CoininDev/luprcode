@@ -32,11 +32,21 @@ impl Node {
     }
 
     pub fn reduce(&mut self) {
+        let mut remove_children: bool = false;
+
         if let Some(l) = &mut self.left {
-            l.borrow_mut().reduce();
+            { l.borrow_mut().reduce(); }
+
+            if matches!(l.borrow().val, NodeVal::Destructed) {
+                self.left = None;
+            }
         }
         if let Some(r) = &mut self.right {
-            r.borrow_mut().reduce();
+            { r.borrow_mut().reduce(); }
+
+            if matches!(r.borrow().val, NodeVal::Destructed) {
+                self.right = None;
+            }
         }
 
         if let NodeVal::Command(cmd) = &self.val {
@@ -47,21 +57,12 @@ impl Node {
             } else {
                 self.val = NodeVal::Null;
             }
-        }
-        if let NodeVal::Destructed = &self.val {
-            if let Some(a) = &self.parent {
-                if let Some(a) = a.upgrade() {
-                    let mut a = a.borrow_mut();
-                    match self.id {
-                        NodeID::Left => a.left = None,
-                        NodeID::Right => a.right = None,
-                        _ => {}
-                    }
-                }
-            }
+            remove_children = true;
         }
 
-        self.left = None;
-        self.right = None;
+        if remove_children{
+            self.right = None;
+            self.left = None;
+        }
     }
 }

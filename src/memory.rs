@@ -12,7 +12,7 @@ lazy_static! {
     });
 }
 
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Hash, PartialEq, Eq, Clone)]
 pub enum MemNode {
     Char(char),
     Num(i64),
