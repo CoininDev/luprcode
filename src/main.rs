@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 #[macro_use]
 mod command;
 mod memory;
@@ -37,7 +38,6 @@ fn simple_comparison() -> NodeRef {
     .build()
 }
 
-// not working yet
 fn var_assign() -> NodeRef {
     Tree::root(NodeVal::Null)    
         .l(Destructor!())
@@ -48,5 +48,21 @@ fn var_assign() -> NodeRef {
             .up()
         .upr(GetVar!())
             .l(NodeVal::Text("var".into()))
+    .build()
+}
+
+// something's getting wrong here
+fn condition() -> NodeRef {
+    Tree::root(NodeVal::Null)
+        .l(Destructor!())
+            .l(SetVar!())
+                .l(NodeVal::Text("my_bool".into()))
+                .upr(NodeVal::Boolean(true))
+                .up()
+            .up()
+        .upr(IfCmd!())
+            .l(GetVar!())
+                .l(NodeVal::Text("my_bool".into()))
+            .upr(NodeVal::Text("If you see this, hi!".into()))
     .build()
 }

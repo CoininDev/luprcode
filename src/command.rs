@@ -93,8 +93,8 @@ strategy_struct!(Xand, |l, r| Some(NodeVal::Boolean(
 )));
 strategy_struct!(IfCmd, |l, r: Option<NodeVal>| match l? {
     NodeVal::Boolean(true) => r.clone(),
-    NodeVal::Boolean(false) => None,
-    _ => None,
+    NodeVal::Boolean(false) => Some(NodeVal::Destructed),
+    _ => Some(NodeVal::Destructed),
 });
 
 //vars
@@ -107,7 +107,7 @@ strategy_struct!(SetVar, |l: Option<NodeVal>, r: Option<NodeVal>| {
 });
 
 strategy_struct!(GetVar, |l: Option<NodeVal>, _| {
-    let mut mem = MEMORY.lock().ok()?;
+    let mem = MEMORY.lock().ok()?;
     let key: MemNode = l?.into();
     let res: NodeVal = mem.map[&key].clone().into();
     Some(res)
